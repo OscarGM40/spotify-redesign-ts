@@ -1,0 +1,64 @@
+		SPOTIFY REDESIGNED WITH NEXT-JS TAILWINDCSS SPOTIFY API NEXTAUTH AND RECOIL
+
+Source: https://www.youtube.com/watch?v=5qwpAn8bqCg&t=299s&ab_channel=ILWYennefer
+Repo: https://github.com/lukef7fywmrp/spotify-redesign
+
+NOTA: Usaremos Recoil porque la app es muy simple y no requiere de redux.
+En Octubre 2021 salió Nextjs v12.Agregó un Rust compiler soporte de <Image /< con .avif,soporte con React 18... y Middleware(que usó en LinkedIn clone y parece útil).
+
+Empiezo con el proyecto de pruebas en vez de instalar todo el set de TAILWINDCSS:
+npx create-next-app -e with-tailwindcss <my_proyect>
+
+NOTA:recuerda que en Next cada archivo dentro de /pages debe empezar con minúsculas.
+
+IMPORTANTE: usar etiquetas semánticas posiciona mejor el SEO asi que debo usarlas.No es una cuestión de si quiero o no.El Dashboard principal debe llamarse <main>
+  return (
+    <main>
+    </main>
+  )
+					25M SIDEBAR
+
+NOTA.recuerda que puedo crear un jsconfig.json con :
+{
+meIcon className="sidebarIcon text-white opacity-[0.85]" />
+"compilerOptions":{
+  "baseUrl":"src"
+}  } 
+Y asi cambiar desde donde empieza cada import.No parece muy útil en Next pero sí en React o Angular.
+
+IMPORTANTE: vamos a usar tanto heroicons(@heroicons/react) como react-icons.Realmente react-icons contiene ya a hero-icons,pero asi aprendemos más.
+>npm install react-icons @heroicons/react
+
+Fijate que cualquier clase que declare con @layer component luego la puedo sobreescribir en la capa de utilities:
+
+ <HomeIcon className="sidebarIcon text-white opacity-[0.85]" /> <- text-white va a pisar al text-[#808080]  de sidebarIcon pues esta en una capa superior.
+
+					PLUGINS PARA TAILWINDCSS
+
+Fijate que vamos a instalar los siguientes plugins para tailwind:
+  plugins: [
+    require("tailwind-scrollbar-hide"),
+    require("@tailwindcss/forms"),
+    require("tailwind-scrollbar"),
+  ],
+npm i @tailwindcss/forms tailwind-scrollbar-hide
+npm i -D tailwind-scrollbar <- éste va en desarrollo
+
+NOTA: no confundir tailwind-scrollbar con tailwind-scrollbar-hide.El segundo ya lo he visto.El primero agrega funcionalidad para agregar scrollbar más bonitas y  customizarlas.Usaremos los tres
+
+Fijate como puedo crear un divisor con tailwind usando las clases divide-dotted | divide-dashed,etc.Incluso se le puede dar un color y grosor,y con 'x' o 'y' eligo si es un divisor entre el eje X o entre el eje Y.En este caso quiero dividir dos div en el eje X asi que es divide-x
+  <div className="flex items-center divide-dotted divide-x-2 divide-[#333] ml-auto">
+
+			1H53M SPOTIFY API AND CREATING A SPOTIFY APP
+
+Dado que necesitamos comprobar el token y otras features hay que usar NextAuth y como Provider a Spotify.
+Hay que crear una aplicación en https//developer.spotify.com también(habrá que registrarse también)
+Se necesitará una cuenta Premium para reproducir las canciones,pero todo lo demás(busqueda,imagenes,etc) no es necesario.
+Creo una cuenta en Spotify(ya tenia una),voy al dashboard de develop.spotify y creo una app con ellos.Alli ya veré el Client ID y el Secret.Obviamente los necesito.
+
+Ya puedo instalar NextAuth:
+>npm i next-auth
+Envuelvo la app en el HOC  SessionProvider y creo el file en pages/api/auth llamado [...nextauth].js.Alli me traigo el código para el provider Spotify.
+
+2h06m
+
