@@ -1,12 +1,54 @@
-import { useState } from "react"
+import { useSession } from "next-auth/react"
+import { useEffect, useState } from "react"
+import SpotifyWebApi from "spotify-web-api-node";
 import Search from "./Search"
 
-interface Props {}
-const Body = (props: Props) => {
+interface Track{
+  id?:string,
+  artist?:string,
+  title?:string,
+  uri?:string,
+  albumUrl?:string,
+  popularity?:number,
+}
+interface Props {
+  spotifyApi:SpotifyWebApi
+}
+const Body = ({spotifyApi}: Props) => {
 
+  const { data:session} = useSession();
+  const { accessToken } = session!;
   const [search, setSearch] = useState("")
-  const [ searchResults, setSearchResults ] = useState([]);
+  const [searchResults, setSearchResults] = useState<Track[]>()
+  const [ newReleases,setNewReleases ] = useState([]);
   
+  useEffect(() => {
+    if(!accessToken) return;
+    spotifyApi.setAccessToken(accessToken);
+  },[accessToken]);
+
+  /* Searching... */
+  useEffect(() => {
+    if(!search) return setSearchResults([]);
+    if(!accessToken) return;
+
+    spotifyApi.searchTracks(search,{
+      limit:10
+    })
+    .then(data => setSearchResults(data.body.tracks?.items.map(track => ({
+      id:track.id,
+      artist:track.artists[0].name,
+      title:track.name,
+      uri:track.uri,
+      albumUrl:track.album.images[0].url,
+      popularity:track.popularity,
+    }))));
+
+  } ,[accessToken,search]);
+  // console.log(searchResults, "searchResults");
+
+
+
   
   return (
     <section className="bg-black ml-24 py-4 space-y-8 md:max-w-6xl flex-grow md:mr-2.5">

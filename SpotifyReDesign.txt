@@ -60,5 +60,136 @@ Ya puedo instalar NextAuth:
 >npm i next-auth
 Envuelvo la app en el HOC  SessionProvider y creo el file en pages/api/auth llamado [...nextauth].js.Alli me traigo el código para el provider Spotify.
 
-2h06m
+Sin embargo no va a terminar aqui.Crearemos un custom login y además fijate que puedo usar rutas propias para signIn,newUser,signOut o un error(ver documentación).
 
+Además, podria añadir adapters a nuestra auth guardando en una DB la user-pool.ESpero verlo más adelante.
+
+IMPORTANTE: también necesitaré la propiedad authorization(es la redirect URL a la que me lleva Spotify:
+
+export default NextAuth({
+  providers: [
+    SpotifyProvider({
+      clientId: process.env.SPOTIFY_CLIENT_ID!,
+      clientSecret: process.env.SPOTIFY_CLIENT_SECRET!,
+      authorization:
+        "https://accounts.spotify.com/authorize?scope=user-read-email,playlist-read-private,user-read-email,streaming,user-read-private, ...
+
+NOTA: todo esto lo puedo ver en su documentación del Provider Spotify,aunque no queda muy claro,hay que pasar la propiedad authorization con su URL + los scopes(antes se hacia por separado,con las propiedades scope y authorizationURL).
+
+Y en cuanto a las callbacks y la funcion helper refreshAccessToken lo ha sacado de aqui:
+https://next-auth.js.org/tutorials/refresh-token-rotation
+
+IMPORTANTE: fijate que el hook useSession de Next me trae también un status:
+
+(alias) useSession<boolean>(options?: UseSessionOptions<boolean> | undefined): {
+    data: Session;
+    status: "authenticated";
+} | {
+    data: null;
+    status: "loading";
+} | {
+    data: Session;
+    status: "unauthenticated";
+} | {
+
+Con todo esto en mente puedo usar un loading mientras carga la sesión(comprobando que status sea 'loading').Implementar en twitter-clone.Implementar Suspense con Recoil
+
+const Home: NextPage = () => {
+  const router = useRouter()
+  const { status, data: session } = useSession({
+    required: true,
+    onUnauthenticated: () => router.push('/signin'),
+  })
+
+  if(status === 'loading') return <Loader />;
+
+IMPORTANTE: fijate que aún falta añadir la redirect URL al proyecto en developer.spotifyLa opción donde agregarla está en editSettings y puedo ver en la documentación de NextAuth que todas las redirect URI van a seguir este formato:
+
+[origin]/api/auth/callback/[provider]
+Por ejemplo la de twitter sería asi: http://localhost:3000/api/auth/callback/twitter
+
+Añado la redirect URI y ya podré hacer SignIn.Fijate que si imprimo la session me devuelven un user,expires y el accessToken,gracias al código extra de [...nextauth].ts.Genial,con ese token de acceso programático ya podré hacer peticiones
+
+		SPOTIFY WEB API NODE
+ 
+Vamos a usar la libreria para node 'spotify-web-api-node'.Es la libreria oficial de npm:
+https://www.npmjs.com/package/spotify-web-api-node
+
+* Esta libreria es un wrapper/client universal para Spotify Wep Api para Node,usando webpack/rollup/browserify.
+La libreria es muy extensa y permite cosas como estas:
+brary includes helper functions to do the following:
+
+Fetch music metadata
+Albums, artists, and tracks
+Audio features and analysis for tracks
+Albums for a specific artist
+Top tracks for a specific artist
+Artists similar to a specific artist
+Profiles
+User's emails, product type, display name, birthdate, image
+Search
+Albums, artists, tracks, and playlists
+Playlist manipulation
+Get a user's playlists
+Create playlists
+Change playlist details
+Add tracks to a playlist
+Remove tracks from a playlist
+Replace tracks in a playlist
+Reorder tracks in a playlist
+Your Music library
+Add, remove, and get tracks and albums that are in the signed in user's Your Music library
+Check if a track or album is in the signed in user's Your Music library
+
+Puedo ver que puede manipular casi todo.Gran elección.
+
+				MODO DE USO
+
+Simplemente instanciar el wrapper:
+
+var SpotifyWebApi = require('spotify-web-api-node');
+
+// credentials are optional
+var spotifyApi = new SpotifyWebApi({
+  clientId: 'fcecfc72172e4cd267473117a17cbd4d',
+  clientSecret: 'a6338157c9bb5ac9c71924cb2940e1a7',
+  redirectUri: 'http://www.example.com/callback'
+});
+
+* Si tengo un token lo puedo pegar asi(obviamente lo tengo):
+spotifyApi.setAccessToken('<your_access_token>');
+
+Y ya puedo usar los métodos helper de la libreria:
+
+spotifyApi.getArtistAlbums('43ZHCT0cAZBISjO8DG9PnE').then(
+  function(data) {
+    console.log('Artist albums', data.body);
+  },
+  function(err) {
+    console.error(err);
+  }
+);
+
+Bien,una vez con esto claro es hora de pedir las canciones,posters,albumes,artistas,etc...En el componente <Body> crearemos varios SideEffects:
+Éste es para cuando se introduzca algo en el Search:
+
+  /* Searching... */
+  useEffect(() => {
+    if(!search) return setSearchResults([]);
+    if(!accessToken) return;
+
+    spotifyApi.searchTracks(search,{
+      limit:10
+    })
+    .then(data => setSearchResults(data.body.tracks?.items.map(track => ({
+      id:track.id,
+      artist:track.artists[0].name,
+      title:track.name,
+      uri:track.uri,
+      albumUrl:track.album.images[0].url,
+      popularity:track.popularity,
+    }))));
+
+  } ,[accessToken,search]);
+
+Haremos otros efectos para new Releases.3h25m
