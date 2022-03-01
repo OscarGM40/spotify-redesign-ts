@@ -192,4 +192,19 @@ Bien,una vez con esto claro es hora de pedir las canciones,posters,albumes,artis
 
   } ,[accessToken,search]);
 
-Haremos otros efectos para new Releases.3h25m
+Haremos otros efectos para new Releases.
+NOTA: fijate que puedo targetear la opacity con /<number.Ejemplo: text-white/80(esto es como rgba(255,255,255,0.8)
+
+De nuevo esta aplicación va a ser bastante sencilla en cuanto al state asi que Recoil será una buena opción:
+import { atom } from 'recoil'
+
+export const playState = atom({
+  key: 'playState',
+  default: false,
+})
+
+export const playingTrackState = atom({
+  key: 'playingTrackState',
+  default: '',
+})
+4h12
