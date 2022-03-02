@@ -207,4 +207,11 @@ export const playingTrackState = atom({
   key: 'playingTrackState',
   default: '',
 })
-4h12
+
+NOTA: puedo usar min-w-max(min-width: max-content) o min-w-min(min-width: min-content).Es decir que también tengo min-w-[size]
+
+NOTA: en Tailwind puedo usar truncate para que me meta una ellipsis pero siempre que use la clase truncate necesitaré un width para que sepa en que punto debe truncar el contenido y meter la ellipsis:
+ <h4 className="text-white text-sm font-semibold truncate w-[450px]"> <- en cuanto este h4 llegue a 450px no se verá más que '...
+
+
+

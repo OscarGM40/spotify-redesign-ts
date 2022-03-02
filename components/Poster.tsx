@@ -40,6 +40,13 @@ const Poster = ({ track, chooseTrack }: Props) => {
             <BsFillPlayFill className="ml-[1px] h-6 w-6" />
           )}
         </div>
+
+          <div className="text-[16px]">
+            <h4 className="font-extrabold truncate w-44">{track.title}</h4>
+            <h6 className="text-sm">{track.artist}</h6>
+
+          </div>
+        
       </div>
     </div>
   )
