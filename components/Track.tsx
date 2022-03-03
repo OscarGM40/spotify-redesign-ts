@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Track } from './Body'
 import { ImHeadphones } from 'react-icons/im'
+import { AiFillHeart } from 'react-icons/ai'
+import { playingTrackState, playState } from '../atoms/playerAtom'
+import { useRecoilState } from 'recoil'
+import { BsFillPlayFill, BsFillPauseFill } from 'react-icons/bs'
 
 type Props = {
   track: Track
@@ -8,6 +12,20 @@ type Props = {
 }
 
 const Track = ({ track, chooseTrack }: Props) => {
+
+  const [play, setPlay] = useRecoilState(playState)
+  const [playingTrack, setPlayingTrack] = useRecoilState(playingTrackState)
+
+  const [hasLiked, setHasLiked] = useState(false);
+
+  const handlePlay = () => {
+      chooseTrack(track)
+
+      if (track.uri === playingTrack?.uri) {
+        setPlay(!play)
+      }
+    }
+
   return (
     <div className="group flex cursor-default items-center justify-between space-x-20 rounded-lg py-2 px-4 transition duration-200 ease-out hover:bg-white/10">
       <div className="flex items-center">
@@ -25,15 +43,38 @@ const Track = ({ track, chooseTrack }: Props) => {
           </p>
         </div>
       </div>
-        <div className="flex items-center space-x-2.5 md:ml-auto">
-          <div className="text-white flex space-x-1 text-sm font-semibold">
-            <ImHeadphones className="text-lg" />
-            <h4>{track.popularity}</h4>
-          </div>
-
-    <div className="flex items-center rounded-full border-2 border-[#262626] w-[85px] h-10 relative cursor-pointer group-hover:border-white/40"></div>
-
+      <div className="flex items-center space-x-2.5 md:ml-auto">
+        <div className="flex space-x-1 text-sm font-semibold text-white">
+          <ImHeadphones className="text-lg" />
+          <h4>{track.popularity}</h4>
         </div>
+
+        <div className="relative flex h-10 w-[85px] cursor-pointer items-center rounded-full border-2 border-[#262626] group-hover:border-white/40">
+          <AiFillHeart
+            className={`icon ml-3 text-xl ${
+              hasLiked ? 'text-[#1ed760]' : 'text-[#868686]'
+            }`}
+            onClick={() => setHasLiked(!hasLiked)}
+          />
+          {track.uri === playingTrack?.uri && play ? (
+            <div
+              className="icon absolute -right-0.5 flex h-10 w-10 items-center justify-center rounded-full border border-[#15883e] bg-[#15883e] hover:scale-110"
+              onClick={handlePlay}
+            >
+              <BsFillPauseFill className="text-xl text-white mb-[-1px] ml-[1px]" />
+            </div>
+          ) : (
+            <>
+              <div
+                className="icon absolute -right-0.5 flex h-10 w-10 items-center justify-center rounded-full border border-white/60 hover:scale-110 hover:border-[#15883e] hover:bg-[#15883e] transition duration-200 group"
+                onClick={handlePlay}
+              >
+                <BsFillPlayFill className="ml-[1px] text-xl text-white mb-[-1px]" />
+              </div>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   )
 }
