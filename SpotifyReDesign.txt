@@ -213,5 +213,15 @@ NOTA: puedo usar min-w-max(min-width: max-content) o min-w-min(min-width: min-co
 NOTA: en Tailwind puedo usar truncate para que me meta una ellipsis pero siempre que use la clase truncate necesitaré un width para que sepa en que punto debe truncar el contenido y meter la ellipsis:
  <h4 className="text-white text-sm font-semibold truncate w-[450px]"> <- en cuanto este h4 llegue a 450px no se verá más que '...
 
+NOTA: recuerda que cada vez que use overflow-y:hidden tengo que darle una altura a ese contenedor
+IMPORTANTE: fijate de nuevo como con truncate y un ancho arregla todo:
+   <h4 className="mb-0.5 max-w-[150px] cursor-pointer truncate text-[13px] font-semibold text-white hover:underline">
+          {track.title}
+        </h4>
 
+Fijate,este es un ejemplo sencillo de la zona de plugins de un .vimrc:
+call plug#begin()
+Plug 'tpope/vim-sensible'
+call plug#end()
+5h42m
 
