@@ -26,7 +26,7 @@ const Right = ({spotifyApi,chooseTrack}: Props) => {
     // spotifyApi.getMyRecentlyPlayedTracks({ limit: 10 }).then((res) => {
     spotifyApi.getNewReleases({ limit: 10 }).then((res) => {
       setRecentlyPlayed(
-        // res.body.items.map(({ track }) => {
+        // res.body.items.map(({ track }) => ({
         res.body.albums?.items.map((track) => ({
             id: track.id,
             artist: track.artists[0].name,
@@ -42,7 +42,7 @@ const Right = ({spotifyApi,chooseTrack}: Props) => {
 
 
   return (
-    <section className="space-y-8 p-4 pr-8">
+    <section className="space-y-8 p-4 pr-8 ">
       <div className="flex items-center justify-between space-x-2">
         {/* Icons */}
         <div className="flex h-12 items-center space-x-4 rounded-full border-2 border-[#262626] py-3 px-4">

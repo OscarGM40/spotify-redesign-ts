@@ -13,32 +13,36 @@ const spotifyApi = new SpotifyWebApi({
 })
 
 const Dashboard = () => {
-  
-  const {data:session} = useSession();
-  const accessToken = session?.accessToken;
+  const { data: session } = useSession()
+  const accessToken = session?.accessToken
 
   const setPlay = useSetRecoilState(playState)
-  const [playingTrack ,setPlayingTrack] = useRecoilState(playingTrackState)
-  const [showPlayer,setShowPlayer] = useState(false);
+  const [playingTrack, setPlayingTrack] = useRecoilState(playingTrackState)
+  const [showPlayer, setShowPlayer] = useState(false)
+
+  /* porque no lo sacó en true desde un principio?? */
+  useEffect(() => {
+    setShowPlayer(true)
+  }, [])
 
   const chooseTrack = (track: Track) => {
     setPlayingTrack(track)
     setPlay(true)
   }
 
-  /* porque no lo sacó en true desde un principio?? */
-  useEffect(() => {
-    setShowPlayer(true)
-  },[]);
-  
   return (
     <main className="flex min-h-screen min-w-max bg-black lg:pb-24">
       <Sidebar />
-      <Body spotifyApi={spotifyApi} chooseTrack={chooseTrack} />
-      <Right spotifyApi={spotifyApi} chooseTrack={chooseTrack} />
-      <div className="fixed bottom-0 inset-x-0 z-50">
-        <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
+      <div className="flex min-w-max mx-auto">
+        <Body spotifyApi={spotifyApi} chooseTrack={chooseTrack} />
+        <Right spotifyApi={spotifyApi} chooseTrack={chooseTrack} />
       </div>
+
+      {showPlayer && (
+        <div className="fixed inset-x-0 bottom-0 z-50">
+          <Player accessToken={accessToken} trackUri={playingTrack?.uri} />
+        </div>
+      )}
     </main>
   )
 }

@@ -10,7 +10,8 @@ const Loader = (props: Props) => {
       <div className="flex flex-col items-center space-y-4 pt-40">
         <span className="relative h-[250px] w-[400px] lg:h-[240px] lg:w-[550px]">
           <Image
-            src="https://rb.gy/y9mwtb"
+            // src="https://rb.gy/y9mwtb"
+            src="/images/spotify2019Dos.jpg"
             layout="fill"
             objectFit="contain"
             className="animate-pulse"

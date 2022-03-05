@@ -37,6 +37,7 @@ const signin = ({ providers }: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Image
+        // src="https://rb.gy/y9mwtb"
         src="/images/spotify2019.jpg"
         height={250}
         width={600}

@@ -223,5 +223,7 @@ Fijate,este es un ejemplo sencillo de la zona de plugins de un .vimrc:
 call plug#begin()
 Plug 'tpope/vim-sensible'
 call plug#end()
-5h42m
 
+Bien,para el reproductor vamos a usar la libreria react-spotify-web-playback que conecta con el SDK:
+npm i react-spotify-web-playback
+Al final hay que tener una cuenta premium para que el token le autorize al usuario a reproducir canciones,como no la tengo dejo el player decorativo.
